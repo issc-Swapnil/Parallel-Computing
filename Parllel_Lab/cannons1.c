@@ -1,15 +1,19 @@
+/*	Name: Neeraj Kashyap
+	Program : Cannon's 
+*/
+
 #include "mpi.h"
 #include <stdio.h>
 #define SIZE 16
 #define UP 0
-#define DOWN 1
+#define DOWN 1	
 #define LEFT 2
 #define RIGHT 3
 int main(int argc, char *argv[])
 {
 	int numtasks, rank, size = 0, A, B, source, dest, outbuf, i, tag=1,x_displacement = 0,y_displacement = 0,
 	nbrs[4], dims[2]={4,4},periods[2]={1,1}, reorder=0, coords[2],rows = 4 ,cols = 4,cnt=0;
-	int a[] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16} , b[] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16} , c[16];
+	int a[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15} , b[] = {0,4,8,12,1,5,9,13,2,6,10,14,3,7,11,15} , c[16];
 	int ln, rn, un, dn, tmp, multi = 0;
 	MPI_Request reqs[2];
 	MPI_Status status[2];
@@ -26,6 +30,7 @@ int main(int argc, char *argv[])
 		MPI_Cart_create(MPI_COMM_WORLD, 2, dims, periods, reorder, &cartcomm);
 		MPI_Comm_rank(cartcomm, &rank);
 		MPI_Cart_coords(cartcomm, rank, 2, coords);
+		
 		
 		for(i = 0; i < 4; i++)
 		{
@@ -56,10 +61,12 @@ int main(int argc, char *argv[])
 		multi = multi + (A*B);
 		
 		}
+		//printf("Multiplication = %d\n",multi);
 	
 		MPI_Gather(&multi, 1, MPI_INT,&c[rank],1,MPI_INT,0,cartcomm);
 
 		if(rank==0)
+		
 		for(i=0;i<16;i++)
 		{
 		printf("%d \t",c[i]);cnt++;
